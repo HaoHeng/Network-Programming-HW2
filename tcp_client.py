@@ -10,10 +10,20 @@ PORT = 5566
 ADDR = (HOST, PORT)
 
 def display_bricks(scenario):
-	print scenario
-	sss=json.loads(scenario)
-	print sss['message']
-	return
+	dict_scenario=json.loads(scenario)
+	if dict_scenario['status']==0 and dict_scenario['message']=='Game not change':
+		print 'not change'
+		return
+	print dict_scenario['message']
+	print '---------------------'
+	print '|    |    |    |    |'
+	print '---------------------'
+	print '|    |    |    |    |'
+	print '---------------------'
+	print '|    |    |    |    |'
+	print '---------------------'
+	print '|    |    |    |    |'
+	print '---------------------'
 
 def fsm_state_local_transition_table(command):
 	if command=='connect':
@@ -56,7 +66,7 @@ def fsm_state_during_a_game_transition_table(command):
 		display_bricks(game_scenario)
 		return 'during a game'
 	elif command=='a':
-		tcpCliSock.sendall('{"action":"moveRight"}')
+		tcpCliSock.sendall('{"action":"moveLeft"}')
 		game_scenario=tcpCliSock.recv(1024)
 		display_bricks(game_scenario)
 		return 'during a game'
@@ -67,7 +77,7 @@ def fsm_state_during_a_game_transition_table(command):
 		return 'during a game'
 	
 	elif command=='d':
-		tcpCliSock.sendall('{"action":"moveLeft"}')
+		tcpCliSock.sendall('{"action":"moveRight"}')
 		game_scenario=tcpCliSock.recv(1024)
 		display_bricks(game_scenario)
 		return 'during a game'
@@ -107,6 +117,3 @@ while True:
 		
 	else:
 		error()
-
-
-
