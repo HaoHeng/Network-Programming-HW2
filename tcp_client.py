@@ -9,17 +9,18 @@ HOST = '127.0.0.1'
 PORT = 5566
 ADDR = (HOST, PORT)
 
+tcpCliSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 def display_bricks(scenario):
-	dict_scenario=json.loads(scenario)
-	print scenario
-	print dict_scenario
 	if dict_scenario['status']==0 and dict_scenario['message']=='Game not change':
 		print 'not change'
 		return
+	elif dict_scenario['status']==1 and dict_scenario['message']=='The game has closed':
+		print 'The game has closed'
+		return
 	
-	
+	dict_scenario=json.loads(scenario)
 	ary_scenario=dict_scenario['message'].split(',')
-	print ary_scenario[1]
 		
 	print '---------------------'
 	print '|'+ str(repr(int(ary_scenario[0])).rjust(4))+'|'+ str(repr(int(ary_scenario[1])).rjust(4))+'|'+ str(repr(int(ary_scenario[2])).rjust(4))+'|'+ str(repr(int(ary_scenario[3])).rjust(4))+'|'
@@ -47,6 +48,7 @@ def fsm_state_server_has_been_connected_transition_table(command):
 	elif command=='disconnect':
 		print "disconnect from game server"
 		tcpCliSock.close()
+		#tcpCliSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		return 'local'
 	elif command=='new':
 		tcpCliSock.sendall("{'action':'New'}")
@@ -65,7 +67,8 @@ def fsm_state_during_a_game_transition_table(command):
 		return 'during a game'
 	elif command=='end':
 		tcpCliSock.sendall('{"action":"End"}')
-		print "The game has closed"
+		game_scenario=tcpCliSock.recv(1024)
+		display_bricks(game_scenario)
 		return 'server has been connected'
 	elif command=='w':
 		tcpCliSock.sendall('{"action":"moveUp"}')
@@ -104,7 +107,6 @@ def fsm_state_during_a_game_transition_table(command):
 	
 fsm_state="local"
 
-tcpCliSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 print "Welcome to Game 2048!"
 print "enter 'help' to get more information."
