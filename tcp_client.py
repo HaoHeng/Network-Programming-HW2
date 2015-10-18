@@ -11,19 +11,26 @@ ADDR = (HOST, PORT)
 
 def display_bricks(scenario):
 	dict_scenario=json.loads(scenario)
+	print scenario
+	print dict_scenario
 	if dict_scenario['status']==0 and dict_scenario['message']=='Game not change':
 		print 'not change'
 		return
-	print dict_scenario['message']
+	
+	
+	ary_scenario=dict_scenario['message'].split(',')
+	print ary_scenario[1]
+		
 	print '---------------------'
-	print '|    |    |    |    |'
+	print '|'+ str(repr(int(ary_scenario[0])).rjust(4))+'|'+ str(repr(int(ary_scenario[1])).rjust(4))+'|'+ str(repr(int(ary_scenario[2])).rjust(4))+'|'+ str(repr(int(ary_scenario[3])).rjust(4))+'|'
 	print '---------------------'
-	print '|    |    |    |    |'
+	print '|'+ str(repr(int(ary_scenario[4])).rjust(4))+'|'+ str(repr(int(ary_scenario[5])).rjust(4))+'|'+ str(repr(int(ary_scenario[6])).rjust(4))+'|'+ str(repr(int(ary_scenario[7])).rjust(4))+'|'
 	print '---------------------'
-	print '|    |    |    |    |'
+	print '|'+ str(repr(int(ary_scenario[8])).rjust(4))+'|'+ str(repr(int(ary_scenario[9])).rjust(4))+'|'+ str(repr(int(ary_scenario[10])).rjust(4))+'|'+ str(repr(int(ary_scenario[11])).rjust(4))+'|'
 	print '---------------------'
-	print '|    |    |    |    |'
+	print '|'+ str(repr(int(ary_scenario[12])).rjust(4))+'|'+ str(repr(int(ary_scenario[13])).rjust(4))+'|'+ str(repr(int(ary_scenario[14])).rjust(4))+'|'+ str(repr(int(ary_scenario[15])).rjust(4))+'|'
 	print '---------------------'
+	return
 
 def fsm_state_local_transition_table(command):
 	if command=='connect':
