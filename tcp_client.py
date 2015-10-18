@@ -17,7 +17,16 @@ def fsm_state_local_transition_table(command):
 		return 'local'
 
 def fsm_state_server_has_been_connected_transition_table(command):
-	return
+	if command=='connect':
+		print("Have already connected to server")
+		return 'server has been connected'
+	elif command=='disconnect':
+		print("disconnect from game server")
+		tcpCliSock.close()
+		return 'local'
+	else:
+		print("Please new a game round first")
+		return 'server has been connected'
 
 def fsm_state_during_a_game_transition_table(command):
 	return
@@ -33,15 +42,15 @@ print("enter 'help' to get more information.")
 while True:
 	if fsm_state=='local':
 		user_command = input(">")
-		fsm_state_local_transition_table(user_command)
+		fsm_state=fsm_state_local_transition_table(user_command)
 		
 	elif fsm_state=='server has been connected':
 		user_command = input(">")
-		fsm_state_server_has_been_connected_transition_table(user_command)
+		fsm_state=fsm_state_server_has_been_connected_transition_table(user_command)
 		
 	elif fsm_state=='during a game':
 		user_command = input("move>")
-		fsm_state_during_a_game_transition_table(user_command)
+		fsm_state=fsm_state_during_a_game_transition_table(user_command)
 		
 	else:
 		error()
