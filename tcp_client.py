@@ -34,10 +34,26 @@ def display_bricks(scenario):
 	print '---------------------'
 	return
 
+def display_help_message():
+	print "'connect' - connect to game server"
+	print "'disconnect' - disconnect from game server"
+	print "'new' - new a game round"
+	print "'end' - close the game"
+	print "'w' - move bricks up"
+	print "'s' - move bricks down"
+	print "'a' - move bricks left"
+	print "'d' - move bricks right"
+	print "'u' - undo the last move"
+	return
+
 def fsm_state_local_transition_table(command):
 	if command=='connect':
 		tcpCliSock.connect(ADDR)
+		print 'connect to game server'
 		return 'server has been connected'
+	elif command=='help':
+		display_help_message()
+		return 'local'
 	else:
 		print "Please connect to server first."
 		return 'local'
@@ -73,37 +89,40 @@ def fsm_state_during_a_game_transition_table(command):
 		display_bricks(game_scenario)
 		return 'server has been connected'
 	elif command=='w':
-		tcpCliSock.sendall('{"action":"moveUp"}')
-		game_scenario=tcpCliSock.recv(1024)
-		display_bricks(game_scenario)
-		return 'during a game'
+		json_to_be_sent='{"action":"moveUp"}'
+		
 	elif command=='a':
-		tcpCliSock.sendall('{"action":"moveLeft"}')
-		game_scenario=tcpCliSock.recv(1024)
-		display_bricks(game_scenario)
-		return 'during a game'
+		json_to_be_sent='{"action":"moveLeft"}'
+		
 	elif command=='s':
-		tcpCliSock.sendall('{"action":"moveDown"}')
-		game_scenario=tcpCliSock.recv(1024)
-		display_bricks(game_scenario)
-		return 'during a game'
-	
+		json_to_be_sent='{"action":"moveDown"}'
+		
 	elif command=='d':
-		tcpCliSock.sendall('{"action":"moveRight"}')
-		game_scenario=tcpCliSock.recv(1024)
-		display_bricks(game_scenario)
-		return 'during a game'
-	
+		json_to_be_sent='{"action":"moveRight"}'
+		
 	elif command=='u':
-		tcpCliSock.sendall('{"action":"unDo"}')
-		game_scenario=tcpCliSock.recv(1024)
-		display_bricks(game_scenario)
-		return 'during a game'
+		json_to_be_sent='{"action":"unDo"}'
+		
 	else:
 		print "wrong command!"
 		return 'during a game'
 	
-		
+	tcpCliSock.sendall(json_to_be_sent)
+	game_scenario=tcpCliSock.recv(1024)
+	display_bricks(game_scenario)
+	
+	
+	dict_scenario=json.loads(game_scenario)
+	ary_scenario=dict_scenario['message'].split(',')
+	
+	for i in ary_scenario:
+		if i==2048:
+			print 'Congrats! You win the game!'
+			tcpCliSock.sendall('{"action":"End"}')
+			tcpCliSock.recv(1024)
+			return 'server has been connected'
+			
+	return 'during a game'
 		
 
 	
