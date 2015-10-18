@@ -12,6 +12,7 @@ ADDR = (HOST, PORT)
 tcpCliSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def display_bricks(scenario):
+	dict_scenario=json.loads(scenario)
 	if dict_scenario['status']==0 and dict_scenario['message']=='Game not change':
 		print 'not change'
 		return
@@ -19,7 +20,7 @@ def display_bricks(scenario):
 		print 'The game has closed'
 		return
 	
-	dict_scenario=json.loads(scenario)
+	
 	ary_scenario=dict_scenario['message'].split(',')
 		
 	print '---------------------'
@@ -47,8 +48,9 @@ def fsm_state_server_has_been_connected_transition_table(command):
 		return 'server has been connected'
 	elif command=='disconnect':
 		print "disconnect from game server"
+		global tcpCliSock
 		tcpCliSock.close()
-		#tcpCliSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		tcpCliSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		return 'local'
 	elif command=='new':
 		tcpCliSock.sendall("{'action':'New'}")
