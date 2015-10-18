@@ -74,6 +74,10 @@ def fsm_state_server_has_been_connected_transition_table(command):
 		display_bricks(game_scenario)
 		
 		return 'during a game'
+	
+	elif command=='help':
+		display_help_message()
+		return 'server has been connected'
 		
 	else:
 		print "Please new a game round first"
@@ -83,11 +87,27 @@ def fsm_state_during_a_game_transition_table(command):
 	if command=='new':
 		print "Have already in a game round"
 		return 'during a game'
+	
+	elif command=='help':
+		display_help_message()
+		return 'during a game'
+	
+	elif command=='disconnect':
+		print "disconnect from game server"
+		global tcpCliSock
+		tcpCliSock.close()
+		tcpCliSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		return 'local'
+	
 	elif command=='end':
 		tcpCliSock.sendall('{"action":"End"}')
 		game_scenario=tcpCliSock.recv(1024)
 		display_bricks(game_scenario)
 		return 'server has been connected'
+		
+	elif command=='whosyourdaddy':
+		json_to_be_sent='{"action":"whosyourdaddy"}'
+		
 	elif command=='w':
 		json_to_be_sent='{"action":"moveUp"}'
 		
@@ -116,14 +136,15 @@ def fsm_state_during_a_game_transition_table(command):
 	ary_scenario=dict_scenario['message'].split(',')
 	
 	for i in ary_scenario:
-		if i==2048:
+		if i=='2048':
 			print 'Congrats! You win the game!'
 			tcpCliSock.sendall('{"action":"End"}')
-			tcpCliSock.recv(1024)
+			game_scenario=tcpCliSock.recv(1024)
+			display_bricks(game_scenario)
 			return 'server has been connected'
 			
 	return 'during a game'
-		
+
 
 	
 fsm_state="local"

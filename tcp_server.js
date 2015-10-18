@@ -8,7 +8,7 @@ var server = net.createServer();
 server.on('connection',  function(socket) {
 	console.log("connect "+socket.remoteAddress+":"+socket.remotePort+" "+Date());
 	var game = false; //2048 game object 
-	
+	var cheat=false;
 	//catch data
 	socket.on('data', function(message){
 		// response object
@@ -30,11 +30,22 @@ server.on('connection',  function(socket) {
 			else if(request.action=="moveLeft") response.status = game.moveLeft();
 			else if(request.action=="moveRight") response.status = game.moveRight();
 			else if(request.action=="unDo") response.status = game.unDo();
+			else if(request.action=="whosyourdaddy") cheat=true;
 			else throw("Wrong JSON content");
 			
 			//check action's status, 0:fail 1:success 
-			if(response.status) response.message=game.map.toString();
-			else response.message="Game not change";
+			if(response.status){
+				response.status=1;
+				if(cheat){
+					cheat=false;
+					response.message="2048,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
+				}
+				else response.message=game.map.toString();
+			}
+			else {
+				response.status=0;
+				response.message="Game not change";
+			}
 		}
 		catch(e){
 			if(e=="end"){
