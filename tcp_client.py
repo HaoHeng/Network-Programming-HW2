@@ -22,16 +22,34 @@ def display_bricks(scenario):
 	
 	
 	ary_scenario=dict_scenario['message'].split(',')
-		
+	
 	print '---------------------'
-	print '|'+ str(repr(int(ary_scenario[0])).rjust(4))+'|'+ str(repr(int(ary_scenario[1])).rjust(4))+'|'+ str(repr(int(ary_scenario[2])).rjust(4))+'|'+ str(repr(int(ary_scenario[3])).rjust(4))+'|'
-	print '---------------------'
-	print '|'+ str(repr(int(ary_scenario[4])).rjust(4))+'|'+ str(repr(int(ary_scenario[5])).rjust(4))+'|'+ str(repr(int(ary_scenario[6])).rjust(4))+'|'+ str(repr(int(ary_scenario[7])).rjust(4))+'|'
-	print '---------------------'
-	print '|'+ str(repr(int(ary_scenario[8])).rjust(4))+'|'+ str(repr(int(ary_scenario[9])).rjust(4))+'|'+ str(repr(int(ary_scenario[10])).rjust(4))+'|'+ str(repr(int(ary_scenario[11])).rjust(4))+'|'
-	print '---------------------'
-	print '|'+ str(repr(int(ary_scenario[12])).rjust(4))+'|'+ str(repr(int(ary_scenario[13])).rjust(4))+'|'+ str(repr(int(ary_scenario[14])).rjust(4))+'|'+ str(repr(int(ary_scenario[15])).rjust(4))+'|'
-	print '---------------------'
+	
+	for i in range(0,4):
+		display_line="|"
+		for j in range(0,4):
+			this_brick=""
+			if int(ary_scenario[i*4+j])==0:
+				this_brick=str(" ".rjust(4))
+			else:
+				#print str(repr(int(ary_scenario[i*4+j])).rjust(4))
+				this_brick=str(repr(int(ary_scenario[i*4+j])).rjust(4))
+			#print this_brick
+			display_line = display_line+this_brick
+			display_line = display_line+'|'
+		print display_line
+		print '---------------------'
+	
+	
+	#print '---------------------'
+	#print '|'+ str(repr(int(ary_scenario[0])).rjust(4))+'|'+ str(repr(int(ary_scenario[1])).rjust(4))+'|'+ str(repr(int(ary_scenario[2])).rjust(4))+'|'+ str(repr(int(ary_scenario[3])).rjust(4))+'|'
+	#print '---------------------'
+	#print '|'+ str(repr(int(ary_scenario[4])).rjust(4))+'|'+ str(repr(int(ary_scenario[5])).rjust(4))+'|'+ str(repr(int(ary_scenario[6])).rjust(4))+'|'+ str(repr(int(ary_scenario[7])).rjust(4))+'|'
+	#print '---------------------'
+	#print '|'+ str(repr(int(ary_scenario[8])).rjust(4))+'|'+ str(repr(int(ary_scenario[9])).rjust(4))+'|'+ str(repr(int(ary_scenario[10])).rjust(4))+'|'+ str(repr(int(ary_scenario[11])).rjust(4))+'|'
+	#print '---------------------'
+	#print '|'+ str(repr(int(ary_scenario[12])).rjust(4))+'|'+ str(repr(int(ary_scenario[13])).rjust(4))+'|'+ str(repr(int(ary_scenario[14])).rjust(4))+'|'+ str(repr(int(ary_scenario[15])).rjust(4))+'|'
+	#print '---------------------'
 	return
 
 def display_help_message():
@@ -54,6 +72,8 @@ def fsm_state_local_transition_table(command):
 	elif command=='help':
 		display_help_message()
 		return 'local'
+	elif command=='exit':
+		return 'leaving program'
 	else:
 		print "Please connect to server first."
 		return 'local'
@@ -166,5 +186,13 @@ while True:
 		user_command = raw_input("move>")
 		fsm_state=fsm_state_during_a_game_transition_table(user_command)
 		
+	elif fsm_state=='leaving program':
+		break
 	else:
 		error()
+		
+
+# simple tcp client server example https://wiki.python.org/moin/TcpCommunication
+# repr().rjust() https://docs.python.org/2/tutorial/inputoutput.html
+
+# *** global and local variable http://www.python-course.eu/global_vs_local_variables.php ***
